@@ -41,6 +41,24 @@ function CustomHandler:access(config)
   -- (will log that your plugin is entering this context)
   CustomHandler.super.access(self)
 
+  kong.response.set_header("client_get_host", kong.request.get_host())
+  kong.response.set_header("client_get_ip", kong.client.get_ip())
+  kong.response.set_header("client_get_forwarded_ip", kong.client.get_forwarded_ip())
+  kong.response.set_header("client_get_port", kong.client.get_port())
+  kong.response.set_header("client_get_forwarded_port", kong.client.get_forwarded_port())
+
+  kong.response.set_header("request_get_scheme", kong.request.get_scheme())
+  kong.response.set_header("request_get_host", kong.request.get_host())
+  kong.response.set_header("request_get_port", kong.request.get_port())
+  kong.response.set_header("request_get_forwarded_scheme", kong.request.get_forwarded_scheme())
+  kong.response.set_header("request_get_forwarded_host", kong.request.get_forwarded_host())
+  kong.response.set_header("request_get_forwarded_port", kong.request.get_forwarded_port())
+  kong.response.set_header("request_get_http_version", kong.request.get_http_version())
+  kong.response.set_header("request_get_method", kong.request.get_method())
+  kong.response.set_header("get_path", kong.request.get_path())
+  kong.response.set_header("get_raw_query", kong.request.get_raw_query())
+  kong.response.set_header("get_raw_body", kong.request.get_raw_body())
+  kong.response.set_header("get_header", kong.request.get_header("User-Agent"))
   -- Implement any custom logic here
 end
 
