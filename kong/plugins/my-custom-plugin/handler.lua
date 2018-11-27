@@ -59,6 +59,7 @@ function CustomHandler:access(config)
   kong.response.set_header("get_raw_query", kong.request.get_raw_query())
   kong.response.set_header("get_raw_body", kong.request.get_raw_body())
   kong.response.set_header("get_header", kong.request.get_header("User-Agent"))
+
   -- Implement any custom logic here
 end
 
@@ -66,7 +67,7 @@ function CustomHandler:header_filter(config)
   -- Eventually, execute the parent implementation
   -- (will log that your plugin is entering this context)
   CustomHandler.super.header_filter(self)
-
+  kong.response.set_status(500)
   -- Implement any custom logic here
 end
 
