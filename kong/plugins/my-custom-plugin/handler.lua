@@ -41,11 +41,30 @@ function CustomHandler:access(config)
   -- (will log that your plugin is entering this context)
   CustomHandler.super.access(self)
   local auth = kong.request.get_header("Authorization");
-  if auth~="123456"
+  local result = ValidateAuthorization(auth)
+  if result~="true"
   then
     kong.response.exit(401, "No Authorization")
   end
   -- Implement any custom logic here
+end
+
+function ValidateAuthorization(auth)
+  local http = require "resty.http"  
+  local httpc = http.new()  
+  local url = "http://10.10.8.73:3000/users/validate?auth=" .. auth 
+  local res, err = httpc:request_uri(url, {  
+      method = "GET",   
+  })   
+  if not res then  
+      ngx.log(ngx.WARN,"failed to request: ", err)  
+      return "false"  
+  end  
+  ngx.status = res.status  
+  if ngx.status ~= 200 then  
+      return "false"  
+  end  
+  return res.body
 end
 
 function CustomHandler:header_filter(config)
