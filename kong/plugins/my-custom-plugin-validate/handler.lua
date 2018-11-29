@@ -9,7 +9,7 @@ local CustomHandler = BasePlugin:extend()
 -- Base Plugin handler, it's only role is to instantiate itself
 -- with a name. The name is your plugin name as it will be printed in the logs.
 function CustomHandler:new()
-  CustomHandler.super.new(self, "my-custom-plugin")
+  CustomHandler.super.new(self, "my-custom-plugin-validate")
 end
 
 function CustomHandler:init_worker()
@@ -41,18 +41,22 @@ function CustomHandler:access(config)
   -- (will log that your plugin is entering this context)
   CustomHandler.super.access(self)
   local auth = kong.request.get_header("Authorization");
+  kong.log.err(kong.request.get_header("Authorization"))
+  kong.log.err(kong.request.get_header("Authorization"))
   local result = ValidateAuthorization(auth)
+  kong.log.err(result)
   if result~="true"
   then
     kong.response.exit(401, "No Authorization")
   end
   -- Implement any custom logic here
+
 end
 
 function ValidateAuthorization(auth)
   local http = require "resty.http"  
   local httpc = http.new()  
-  local url = "http://10.10.8.73:3000/users/validate?auth=" .. auth 
+  local url = "http://10.10.8.245:8000/route2/validate?auth=" .. auth 
   local res, err = httpc:request_uri(url, {  
       method = "GET",   
   })   
